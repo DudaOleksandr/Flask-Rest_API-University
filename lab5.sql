@@ -63,5 +63,5 @@ ALTER TABLE `user`
 
 ALTER TABLE `product`
   ADD CONSTRAINT `product_ibfk_1` FOREIGN KEY (`purchase_id`) REFERENCES `purchase` (`id`);
-COMMIT;
+
 
