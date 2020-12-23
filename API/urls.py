@@ -3,11 +3,19 @@ from marshmallow.utils import EXCLUDE
 from .models import Purchase, Product, User, PurchaseSchema, ProductSchema, UserSchema, check_None
 from API import session, app, bcrypt
 
+from flask_jwt_extended import (
+    JWTManager, jwt_required, create_access_token,
+    get_jwt_identity
+)
+
+
+app.config['SECRET_KEY'] = '12345678'
+jwt = JWTManager(app)
 
 # product routes
 
-
 @app.route("/product", methods=['POST'])
+@jwt_required
 def product_add():
     data = request.get_json()
 
@@ -27,6 +35,7 @@ def product_add():
 
 
 @app.route("/product/<int:pk>", methods=['GET'])
+@jwt_required
 def get_product(pk):
     try:
         pk = int(pk)
@@ -42,6 +51,7 @@ def get_product(pk):
 
 
 @app.route("/product/<int:pk>", methods=['PUT'])
+@jwt_required
 def update_product(pk):
     data = request.get_json()
     try:
@@ -61,6 +71,7 @@ def update_product(pk):
 
 
 @app.route("/product/<int:pk>", methods=['DELETE'])
+@jwt_required
 def delete_product(pk):
     try:
         pk = int(pk)
@@ -80,6 +91,7 @@ def delete_product(pk):
 # purchase
 
 @app.route("/purchase", methods=['POST'])
+@jwt_required
 def purchase_order():
     data = request.get_json()
 
@@ -99,6 +111,7 @@ def purchase_order():
 
 
 @app.route("/purchase/<int:pk>", methods=['GET'])
+@jwt_required
 def get_purchase(pk):
     try:
         pk = int(pk)
@@ -114,6 +127,7 @@ def get_purchase(pk):
 
 
 @app.route("/purchase/<int:pk>", methods=['PUT'])
+@jwt_required
 def update_purchase(pk):
     data = request.get_json()
     try:
@@ -133,6 +147,7 @@ def update_purchase(pk):
 
 
 @app.route("/purchase/<int:pk>", methods=['DELETE'])
+@jwt_required
 def cancel_purchase(pk):
     try:
         pk = int(pk)
@@ -157,6 +172,7 @@ def user_add():
     try:
         data['password'] = bcrypt.generate_password_hash(
             data['password']).decode('utf-8')
+        print(data['password'])
         user = UserSchema(partial=True).load(data, unknown=EXCLUDE)
     except Exception:
         return jsonify({'message': "Invalid input"}), 405
@@ -171,6 +187,7 @@ def user_add():
 
 
 @app.route("/user/<int:pk>", methods=['GET'])
+@jwt_required
 def get_user(pk):
     try:
         pk = int(pk)
@@ -185,7 +202,28 @@ def get_user(pk):
     return UserSchema().dump(user)
 
 
+@app.route("/user/<int:pk>", methods=['PUT'])
+@jwt_required
+def update_user(pk):
+    data = request.get_json()
+    try:
+        pk = int(pk)
+    except ValueError:
+        return "Invalid ID ", 400
+
+    try:
+        check_None(User, pk)
+    except Exception:
+        return jsonify({'message': "Product not found"}), 404
+
+    session.query(User).filter(User.id == pk).update(data)
+    session.commit()
+
+    return jsonify({'message': "Success"}), 200
+
+
 @app.route("/user/<int:pk>", methods=['DELETE'])
+@jwt_required
 def delete_user(pk):
     try:
         pk = int(pk)
@@ -199,4 +237,27 @@ def delete_user(pk):
 
     session.delete(user)
     session.commit()
+    return jsonify({'message': "Success"}), 200
+
+
+@app.route("/user/login", methods=["POST"])
+def user_login():
+    data = request.get_json()
+    try:
+        username = data['username']
+        password = str(data['password'])
+    except Exception:
+        return jsonify({'message': "Invalid input"}), 405
+
+    user = session.query(User).filter(User.username == username).one()
+    login_check = bcrypt.check_password_hash(user.password, password)
+    if login_check:
+        access_token = create_access_token(identity=username)
+        return jsonify(access_token=access_token), 200
+    return jsonify({'Login': login_check}), 200
+
+
+@app.route("/user/logout", methods=["GET"])
+@jwt_required
+def user_logout():
     return jsonify({'message': "Success"}), 200
