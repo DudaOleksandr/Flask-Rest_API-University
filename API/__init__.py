@@ -5,8 +5,8 @@ from sqlalchemy.orm import sessionmaker, scoped_session
 
 _version__ = '0.1.0'
 app = Flask(__name__)
+app.config['TESTING'] = True
 bcrypt = Bcrypt(app)
-
 engine = create_engine('mysql+pymysql://root@127.0.0.1:3306/lab5')
 SessionFactory = sessionmaker(bind=engine)
 Session = scoped_session(SessionFactory)

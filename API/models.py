@@ -4,7 +4,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from marshmallow import Schema, fields, post_load
 
-from API import session
+from API import session, bcrypt
 
 Base = declarative_base()
 
@@ -69,8 +69,10 @@ class User(Base):
     user_status = Column(String(32))
     status = Column(String(32))
 
-    def check_password(self, secret):
-        return check_password_hash(self.password, secret)
+    def crypt(self):
+        self.password = bcrypt.generate_password_hash(self.password).decode('utf-8')
+
+
 
 
 class UserSchema(Schema):
