@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>E-shop</title>
+    <link rel="stylesheet" type="text/css" href="../../vendor/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../css/style.css">
+	<link rel="stylesheet" type="text/css" href="../../css/util.css">
+
+</head>
+<body>
+    <div class="header">
+        <a href="../Main/main.html">
+        <link>
+            <img src="../../images/logo_eshop.png" width="443" height="227">
+        </link>
+    </a>
+    </div>
+
+    <div class="topnav">
+      <a href="../Main/Contact.html">Contact</a>
+      <a href="../Auth/register.html">Register</a>
+      <a href="../Auth/login.html">Login</a>
+      <a href="../Main/main.html" style="float:left">Home</a>
+    </div>
+
+    <div class="card">
+      <div class="container">
+        <div class="container pb-5">
+          <form>
+            <div class="well">
+              <div class="row">
+                <div class="col-sm-12">
+                  <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Search products...">
+                    <span class="input-group-btn">
+                      <button class="btn btn-info">
+                        <img src="../../images/loupe.png" width="40" height="40">
+                      </button>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <div class="row">
+        <div class="col-sm-4 col-md-3" >
+          <form class="shop__filter " >
+            <h3 class="headline">
+              <span>Price</span>
+            </h3>
+            <div class="radio">
+              <input type="radio"  id="shop-filter-price_1" value="" checked="">
+              <label for="shop-filter-price_1">Under $25</label>
+            </div>
+            <div class="radio">
+              <input type="radio"  id="shop-filter-price_2" value="">
+              <label for="shop-filter-price_2">$25 to $50</label>
+            </div>
+            <div class="radio">
+              <input type="radio"  id="shop-filter-price_3" value="">
+              <label for="shop-filter-price_3">$50 to $100</label>
+            </div>
+            <div class="radio">
+              <input type="radio"  id="shop-filter-price_4" value="specify">
+              <label for="shop-filter-price_4">Other (specify)</label>
+            </div>
+            <div class="form-group shop-filter__price">
+              <div class="row">
+                <div class="col-xs-4">
+                  <label for="shop-filter-price_from" class="sr-only"></label>
+                  <input id="shop-filter-price_from" type="number" min="0" class="form-control" placeholder="From" >
+                </div>
+                <div class="col-xs-4">
+                  <label for="shop-filter-price_to" class="sr-only"></label>
+                  <input id="shop-filter-price_to" type="number" min="0" class="form-control" placeholder="To" >
+                </div>
+              </div>
+              <div class="row p-2">
+                  <button class="btn btn-info" >Go</button>
+                </div>
+            </div>
+
+            <h3 class="headline">
+              <span>Brand</span>
+            </h3>
+            <div class="checkbox">
+              <input type="checkbox" value="" id="shop-filter-checkbox_1" checked="">
+              <label for="shop-filter-checkbox_1">Brand Title</label>
+            </div>
+            <div class="checkbox">
+              <input type="checkbox" value="" id="shop-filter-checkbox_2">
+              <label for="shop-filter-checkbox_2">Brand Title</label>
+            </div>
+            <div class="checkbox">
+              <input type="checkbox" value="" id="shop-filter-checkbox_3">
+              <label for="shop-filter-checkbox_3">Brand Title</label>
+            </div>
+            <div class="checkbox">
+              <input type="checkbox" value="" id="shop-filter-checkbox_4">
+              <label for="shop-filter-checkbox_4">Brand Title</label>
+            </div>
+            <div class="checkbox">
+              <input type="checkbox" value="" id="shop-filter-checkbox_5">
+              <label for="shop-filter-checkbox_5">Brand Title</label>
+            </div>
+
+            <h3 class="headline">
+              <span>Material</span>
+            </h3>
+            <div class="radio">
+              <input type="radio" name="shop-filter__radio" id="shop-filter-radio_1" value="" checked="">
+              <label for="shop-filter-radio_1">Material Title</label>
+            </div>
+            <div class="radio">
+              <input type="radio" name="shop-filter__radio" id="shop-filter-radio_2" value="">
+              <label for="shop-filter-radio_2">Material Title</label>
+            </div>
+            <div class="radio">
+              <input type="radio" name="shop-filter__radio" id="shop-filter-radio_3" value="">
+              <label for="shop-filter-radio_3">Material Title</label>
+            </div>
+            <div class="radio">
+              <input type="radio" name="shop-filter__radio" id="shop-filter-radio_4" value="">
+              <label for="shop-filter-radio_4">Material Title</label>
+            </div>
+            <div class="radio">
+              <input type="radio" name="shop-filter__radio" id="shop-filter-radio_5" value="">
+              <label for="shop-filter-radio_5">Material Title</label>
+            </div>
+          </form>
+        </div>
+
+        <div class="col-sm-8 col-md-9  ">
+
+
+          <div class="row">
+            <div class="col-sm-6 col-md-4">
+              <div class="product_frame">
+                <a href="#">
+                  <div class="product_img">
+                    <img src="../../images/not-found-icon-2.jpg" class="img-responsive" alt="...">
+                  </div>
+                  <h5 class="shop-thumb__title">
+                    Product Title
+                  </h5>
+                  <div class="shop-thumb__price">
+                    <span class="shop-thumb-price_new">$59.99</span>
+                  </div>
+                </a>
+              </div>
+            </div>
+
+            <div class="col-sm-6 col-md-4">
+              <div class="product_frame">
+                <a href="#">
+                  <div class="product_img">
+                    <img src="../../images/not-found-icon-2.jpg" class="img-responsive" alt="...">
+                  </div>
+                  <h5 class="shop-thumb__title">
+                    Product Title
+                  </h5>
+                  <div class="shop-thumb__price">
+                    $59.99
+                  </div>
+                </a>
+              </div>
+            </div>
+
+            <div class="col-sm-6 col-md-4">
+              <div class="product_frame">
+                <a href="#">
+                  <div class="product_img">
+                    <img src="../../images/not-found-icon-2.jpg" class="img-responsive" alt="...">
+                  </div>
+                  <h5 class="shop-thumb__title">
+                    Product Title
+                  </h5>
+                  <div class="shop-thumb__price">
+                    $59.99
+                  </div>
+                </a>
+              </div>
+            </div>
+
+            <div class="col-sm-6 col-md-4">
+              <div class="product_frame">
+                <a href="#">
+                  <div class="product_img">
+                    <img src="../../images/not-found-icon-2.jpg" class="img-responsive" alt="...">
+                  </div>
+                  <h5 class="shop-thumb__title">
+                    Product Title
+                  </h5>
+                  <div class="shop-thumb__price">
+                    $59.99
+                  </div>
+                </a>
+              </div>
+            </div>
+
+            <div class="col-sm-6 col-md-4">
+              <div class="product_frame">
+                <a href="#">
+                  <div class="product_img">
+                    <img src="../../images/not-found-icon-2.jpg" class="img-responsive" alt="...">
+                  </div>
+                  <h5 class="shop-thumb__title">
+                    Product Title
+                  </h5>
+                  <div class="shop-thumb__price">
+                    $59.99
+                  </div>
+                </a>
+              </div>
+            </div>
+
+            <div class="col-sm-6 col-md-4">
+              <div class="product_frame">
+                <a href="#">
+                  <div class="product_img">
+                    <img src="../../images/not-found-icon-2.jpg" class="img-responsive" alt="...">
+                  </div>
+                  <h5 class="shop-thumb__title">
+                    Product Title
+                  </h5>
+                  <div class="shop-thumb__price">
+                    $59.99
+                  </div>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-sm-12">
+
+              <ul class="pagination pull-right">
+                <li class="active">
+                  <a  href="#">
+                    <h5 class="mr-1">1</h5>
+                    <span class="sr-only">(current)</span>
+                  </a>
+                </li>
+                <li><a href="#"><h5 class="mr-1" >2</h5></a></li>
+                <li><a href="#"><h5 class="mr-1">3</h5></a></li>
+                <li><a href="#"><h5 class="mr-1">4</h5></a></li>
+                <li><a href="#"><h5 class="mr-1">5</h5></a></li>
+              </ul>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      </div>
+    </div>
+
+
+</body>
+</html>
