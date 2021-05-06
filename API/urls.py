@@ -1,4 +1,3 @@
-import pytest
 from flask import request, jsonify
 from marshmallow.utils import EXCLUDE
 from .models import Purchase, Product, User, PurchaseSchema, ProductSchema, UserSchema, check_None
@@ -13,8 +12,19 @@ app.config['SECRET_KEY'] = '12345678'
 jwt = JWTManager(app)
 
 
+def exception_handler(func):
+    def wrapper(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except Exception as e:
+            print(e)
+
+    # Renaming the function name:
+    wrapper.__name__ = func.__name__
+    return wrapper
+
+
 @app.route("/product", methods=['POST'])
-@jwt_required
 def product_add():
     data = request.get_json()
     try:
@@ -23,13 +33,8 @@ def product_add():
     except Exception:
         return jsonify({'message': "Invalid ID supplied"}), 400
 
-    if 666 == get_jwt_identity():
-
-        session.add(product)
-        session.commit()
-
-    else:
-        return jsonify({'message': "You have not access to add products"}), 405
+    session.add(product)
+    session.commit()
 
     return jsonify({'message': "Success"}), 200
 
@@ -44,24 +49,32 @@ def get_product(pk):
     return ProductSchema().dump(product)
 
 
+@app.route("/product", methods=['GET'])
+def get_products():
+    try:
+        products = ProductSchema()
+    except Exception:
+        return jsonify({'message': "Products not found"}), 404
+
+    global_products = session.query(Product).order_by(Product.name).all()
+    return jsonify(ProductSchema(many=True).dump(global_products))
+
+
 @app.route("/product/<int:pk>", methods=['PUT'])
-@jwt_required
+@exception_handler
 def update_product(pk):
     data = request.get_json()
     try:
         check_None(Product, pk)
     except Exception:
         return jsonify({'message': "Product not found"}), 404
-    if 777 == get_jwt_identity():
-        session.query(Product).filter(Product.id == pk).update(data)
-        session.commit()
-        return jsonify({'message': "Success"}), 200
-    else:
-        return jsonify({'message': "You have not access to edit products"}), 405
+
+    session.query(Product).filter(Product.id == pk).update(data)
+    session.commit()
+    return jsonify({'message': "Success"}), 200
 
 
 @app.route("/product/<int:pk>", methods=['DELETE'])
-@jwt_required
 def delete_product(pk):
     try:
         product = check_None(Product, pk)
@@ -76,7 +89,6 @@ def delete_product(pk):
 
 
 @app.route("/purchase", methods=['POST'])
-@jwt_required
 def purchase_order():
     data = request.get_json()
     try:
@@ -93,7 +105,6 @@ def purchase_order():
 
 
 @app.route("/purchase/<int:pk>", methods=['GET'])
-@jwt_required
 def get_purchase(pk):
     pk = int(pk)
     try:
@@ -104,7 +115,6 @@ def get_purchase(pk):
 
 
 @app.route("/purchase/<int:pk>", methods=['PUT'])
-@jwt_required
 def update_purchase(pk):
     data = request.get_json()
     try:
@@ -121,7 +131,6 @@ def update_purchase(pk):
 
 
 @app.route("/purchase/<int:pk>", methods=['DELETE'])
-@jwt_required
 def cancel_purchase(pk):
     try:
         purchase = check_None(Purchase, pk)
@@ -140,8 +149,6 @@ def cancel_purchase(pk):
 def user_add():
     data = request.get_json()
     try:
-        data['password'] = bcrypt.generate_password_hash(
-            data['password']).decode('utf-8')
         user = UserSchema(partial=True).load(data, unknown=EXCLUDE)
     except Exception:
         return jsonify({'message': "Invalid data"}), 405
@@ -151,26 +158,20 @@ def user_add():
     return jsonify({'message': "Success"}), 200
 
 
-@app.route("/user", methods=['GET'])
-@jwt_required
-def get_user():
-    pk = get_jwt_identity()
-    user = check_None(User, pk)
+@app.route("/user/<int:pk>", methods=['GET'])
+def get_user(pk):
+    pk = int(pk)
+    try:
+        user = check_None(User, pk)
+    except Exception:
+        return jsonify({'message': "User not found"}), 404
     return UserSchema().dump(user), 200
 
 
-@app.route("/user", methods=['PUT'])
-@jwt_required
-def update_user():
-    pk = get_jwt_identity()
+@app.route("/user/<int:pk>", methods=['PUT'])
+def update_user(pk):
     data = request.get_json()
     try:
-        data['password'] = bcrypt.generate_password_hash(
-            data['password']).decode('utf-8')
-    except Exception:
-        pass
-    try:
-        # check_None(User, pk)
         session.query(User).filter(User.id == pk).update(data)
         session.commit()
     except Exception:
@@ -180,7 +181,6 @@ def update_user():
 
 
 @app.route("/user", methods=['DELETE'])
-@jwt_required
 def delete_user():
     pk = get_jwt_identity()
     user = check_None(User, pk)
@@ -192,12 +192,14 @@ def delete_user():
 @app.route("/user/login", methods=["POST"])
 def user_login():
     data = request.get_json()
-    username = data['username']
-    password = str(data['password'])
-    user = session.query(User).filter(User.username == username).one()
-    login_check = bcrypt.check_password_hash(user.password, password)
-    userID = user.id
-    if login_check:
-        access_token = create_access_token(identity=userID)
-        return jsonify(access_token=access_token), 200
-    return jsonify({'Login': login_check}), 200
+    email = data.get('email')
+    password = data.get('password')
+
+    if not email or not password:
+        return jsonify({'Login': "false"}), 400
+    user = session.query(User).filter(User.email == email).one()
+
+    if user.password == password:
+        return jsonify(login="true"), 200
+
+    return jsonify(login="false"), 400
